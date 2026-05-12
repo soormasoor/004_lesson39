@@ -2,34 +2,30 @@
 class Timer {
   constructor() {
     this.intervalId = null;
-    this.stopped = false;
+    this.isStopped = false;
     this.hours = 0;
     this.minutes = 0;
     this.seconds = 0;
   }
 
-  show() {
+  getTime() {
     console.log(`${this.hours}:${this.minutes}:${this.seconds}`);
   }
 
   update() {
-    if (this.seconds === 60) {
-      this.minutes++;
-      this.seconds = 0;
-    }
+    this.seconds = this.seconds % 60;
+    this.minutes += Math.floor(this.seconds / 60);
 
-    if (this.minutes === 60) {
-      this.hours++;
-      this.minutes = 0;
-    }
+    this.minutes = this.minutes % 60;
+    this.hours += Math.floor(this.minutes / 60);
   }
 
   start() {
-    if (!this.stopped) {
+    if (!this.isStopped) {
       this.intervalId = setInterval(() => {
         this.seconds++;
         this.update();
-        this.show();
+        this.getTime();
       }, 1000);
     }
   }
@@ -41,12 +37,16 @@ class Timer {
 
   stop() {
     this.pause();
-    this.stopped = true;
+    this.isStopped = true;
     console.log("Stopped");
   }
 
   reset() {
-    this.constructor();
+    this.intervalId = null;
+    this.isStopped = false;
+    this.hours = 0;
+    this.minutes = 0;
+    this.seconds = 0;
   }
 }
 
@@ -68,7 +68,7 @@ setTimeout(() => {
 }, 7000);
 
 setTimeout(() => {
-  timer.show();
+  timer.getTime();
   timer.reset();
-  timer.show();
+  timer.getTime();
 }, 9000);
