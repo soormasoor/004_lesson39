@@ -1,23 +1,35 @@
 "use strict";
 class Timer {
-  constructor() {
+  constructor(totalSeconds = 0) {
     this.intervalId = null;
     this.isStopped = false;
-    this.hours = 0;
-    this.minutes = 0;
-    this.seconds = 0;
+    this.totalSeconds = 0;
+  }
+
+  makeCountDown() {
+    return new CountDown(this.getSeconds);
+  }
+
+  getHoursAndMinutes() {
+    return {
+      hours: Math.floor(this.totalSeconds / 3600),
+      minutes: Math.floor(this.totalSeconds / 60),
+      seconds: this.totalSeconds % 60,
+    };
   }
 
   getTime() {
-    console.log(`${this.hours}:${this.minutes}:${this.seconds}`);
+    const { hours, minutes, seconds } = this.getHoursAndMinutes();
+
+    console.log(`${hours}:${minutes}:${seconds}`);
   }
 
   update() {
-    this.seconds = this.seconds % 60;
     this.minutes += Math.floor(this.seconds / 60);
+    this.seconds = this.seconds % 60;
 
-    this.minutes = this.minutes % 60;
     this.hours += Math.floor(this.minutes / 60);
+    this.minutes = this.minutes % 60;
   }
 
   start() {
@@ -32,6 +44,7 @@ class Timer {
 
   pause() {
     clearInterval(this.intervalId);
+    this.intervalId = null;
     console.log("Paused");
   }
 
@@ -42,33 +55,34 @@ class Timer {
   }
 
   reset() {
-    this.intervalId = null;
+    this.stop();
     this.isStopped = false;
-    this.hours = 0;
-    this.minutes = 0;
-    this.seconds = 0;
+    this.totalSeconds = 0;
   }
 }
 
-const timer = new Timer();
+// const timer = new Timer();
 
-timer.seconds = 55;
-timer.start();
+// timer.seconds = 55;
+// timer.start();
 
-setTimeout(() => {
-  timer.pause();
-}, 5000);
+// setTimeout(() => {
+//   timer.pause();
+// }, 5000);
 
-setTimeout(() => {
-  timer.stop();
-}, 6000);
+// setTimeout(() => {
+//   timer.stop();
+// }, 6000);
 
-setTimeout(() => {
-  timer.start();
-}, 7000);
+// setTimeout(() => {
+//   timer.start();
+// }, 7000);
 
-setTimeout(() => {
-  timer.getTime();
-  timer.reset();
-  timer.getTime();
-}, 9000);
+// setTimeout(() => {
+//   timer.getTime();
+//   timer.reset();
+//   timer.getTime();
+// }, 9000);
+
+const countdown = new CountDown(65);
+countdown.start();
