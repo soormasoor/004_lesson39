@@ -3,11 +3,11 @@ class Timer {
   constructor(totalSeconds = 0) {
     this.intervalId = null;
     this.isStopped = false;
-    this.totalSeconds = 0;
+    this.totalSeconds = totalSeconds;
   }
 
   makeCountDown() {
-    return new CountDown(this.getSeconds);
+    return new CountDown(this.totalSeconds);
   }
 
   getHoursAndMinutes() {
@@ -24,22 +24,15 @@ class Timer {
     console.log(`${hours}:${minutes}:${seconds}`);
   }
 
-  update() {
-    this.minutes += Math.floor(this.seconds / 60);
-    this.seconds = this.seconds % 60;
-
-    this.hours += Math.floor(this.minutes / 60);
-    this.minutes = this.minutes % 60;
-  }
-
   start() {
-    if (!this.isStopped) {
-      this.intervalId = setInterval(() => {
-        this.seconds++;
-        this.update();
-        this.getTime();
-      }, 1000);
+    if (this.intervalId || this.isStopped) {
+      return;
     }
+
+    this.intervalId = setInterval(() => {
+      this.totalSeconds++;
+      this.getTime();
+    }, 1000);
   }
 
   pause() {
@@ -61,28 +54,27 @@ class Timer {
   }
 }
 
-// const timer = new Timer();
+class CountDown extends Timer {
+  constructor(totalSeconds) {
+    super(totalSeconds);
+  }
 
-// timer.seconds = 55;
-// timer.start();
+  start() {
+    if (this.intervalId || this.isStopped) {
+      return;
+    }
 
-// setTimeout(() => {
-//   timer.pause();
-// }, 5000);
+    this.intervalId = setInterval(() => {
+      this.totalSeconds--;
+      this.getTime();
 
-// setTimeout(() => {
-//   timer.stop();
-// }, 6000);
+      if (this.totalSeconds <= 0) {
+        this.pause();
+        console.log("Finished");
+      }
+    }, 1000);
+  }
+}
 
-// setTimeout(() => {
-//   timer.start();
-// }, 7000);
-
-// setTimeout(() => {
-//   timer.getTime();
-//   timer.reset();
-//   timer.getTime();
-// }, 9000);
-
-const countdown = new CountDown(65);
+const countdown = new CountDown(10);
 countdown.start();
